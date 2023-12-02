@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="Godot4-DeployToSteamOS"
-config/features=PackedStringArray("4.1", "Forward Plus")
+run/main_scene="res://demo/demo.tscn"
+config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]

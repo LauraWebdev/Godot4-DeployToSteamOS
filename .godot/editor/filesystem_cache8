@@ -1,3 +1,7 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1701538642
+::res://::1701538913
 icon.svg::CompressedTexture2D::1070945623494873071::1701538637::1701538643::1::::<><>::
+::res://addons/::1701538884
+::res://addons/deploy_to_steamos/::1701538884
+plugin.cfg::TextFile::-1::1701538884::0::1::::<><>::
+Plugin.cs::CSharpScript::-1::1701538884::0::1::::<><>::

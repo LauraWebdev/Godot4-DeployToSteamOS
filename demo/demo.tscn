@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvc31agshb0el"]
+
+[ext_resource type="Texture2D" uid="uid://pi1k2s1q78mt" path="res://icon.svg" id="1_8o1ex"]
+[ext_resource type="Script" path="res://demo/DemoMovement.cs" id="1_vnpjs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kxjvv"]
+size = Vector2(64, 64)
+
+[node name="Demo" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+script = ExtResource("1_vnpjs")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_8o1ex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("RectangleShape2D_kxjvv")
+
+[node name="Camera2D" type="Camera2D" parent="."]
