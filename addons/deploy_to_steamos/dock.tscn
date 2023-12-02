@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://kdbpdei4v1ub"]
+
+[ext_resource type="Texture2D" uid="uid://s1tcpal4iir4" path="res://addons/deploy_to_steamos/icon.svg" id="1_6ak18"]
+[ext_resource type="Script" path="res://addons/deploy_to_steamos/DeployButton.cs" id="2_vbght"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_awt61"]
+device = -1
+alt_pressed = true
+keycode = 78
+unicode = 110
+
+[sub_resource type="Shortcut" id="Shortcut_k6phr"]
+events = [SubResource("InputEventKey_awt61")]
+
+[node name="DeployButton" type="Button"]
+offset_right = 8.0
+offset_bottom = 8.0
+tooltip_text = "Build & deploy to SteamOS (Alt+N)"
+theme_override_constants/icon_max_width = 20
+shortcut = SubResource("Shortcut_k6phr")
+shortcut_in_tooltip = false
+icon = ExtResource("1_6ak18")
+script = ExtResource("2_vbght")
+
+[connection signal="pressed" from="." to="." method="Deploy"]
