@@ -19,8 +19,16 @@ public partial class PairContainer : VBoxContainer
 		
 		GD.Print("Scanning Devices");
 
-		var devices = await ScanManager.ScanDevices();
+		var devices = await SteamOSDevkitManager.ScanDevices();
 		GD.Print($"Scanned {devices.Count} devices in network.");
+
+		GD.Print("Running PrepareUpload");
+		var result2 = await SteamOSDevkitManager.PrepareUpload(devices[0], "test2");
+		GD.Print(result2);
+
+		GD.Print("Running Test ls");
+		var result = await SteamOSDevkitManager.RunSSHCommand(devices[0], "ls /home/deck/devkit-game");
+		GD.Print(result);
 
 		// TODO: Update UI
 

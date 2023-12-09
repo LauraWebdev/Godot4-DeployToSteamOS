@@ -5,6 +5,7 @@
     <RootNamespace>Godot4DeployToSteamOS</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2023.0.0" />
     <PackageReference Include="Zeroconf" Version="3.6.11" />
   </ItemGroup>
 </Project>
