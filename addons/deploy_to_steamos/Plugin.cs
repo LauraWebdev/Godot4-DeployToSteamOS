@@ -1,7 +1,5 @@
 #if TOOLS
 using Godot;
-using System;
-using Godot.Collections;
 
 [Tool]
 public partial class Plugin : EditorPlugin
@@ -12,7 +10,7 @@ public partial class Plugin : EditorPlugin
 	public override void _EnterTree()
 	{
 		_dock = GD.Load<PackedScene>("res://addons/deploy_to_steamos/dock.tscn").Instantiate<Control>();
-		_settingsPanel = GD.Load<PackedScene>("res://addons/deploy_to_steamos/settings_panel.tscn").Instantiate<Control>();
+		_settingsPanel = GD.Load<PackedScene>("res://addons/deploy_to_steamos/settings_panel/settings_panel.tscn").Instantiate<Control>();
 		
 		AddControlToContainer(CustomControlContainer.Toolbar, _dock);
 		AddControlToContainer(CustomControlContainer.ProjectSettingTabRight, _settingsPanel);

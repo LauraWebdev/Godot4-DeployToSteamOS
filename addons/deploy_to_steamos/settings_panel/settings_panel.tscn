@@ -1,0 +1,218 @@
+[gd_scene load_steps=12 format=3 uid="uid://c8k27e2fcl21j"]
+
+[ext_resource type="Script" path="res://addons/deploy_to_steamos/settings_panel/SettingsPanel.cs" id="1_sde4n"]
+[ext_resource type="Texture2D" uid="uid://bjlqpiaahmp37" path="res://logo_bright.svg" id="2_uruwd"]
+[ext_resource type="Texture2D" uid="uid://du661vtsmqc7h" path="res://addons/deploy_to_steamos/folder.svg" id="3_w3m1c"]
+[ext_resource type="Script" path="res://addons/deploy_to_steamos/settings_panel/PairContainer.cs" id="4_iidhh"]
+[ext_resource type="PackedScene" uid="uid://bn4wtpefsl8h5" path="res://addons/deploy_to_steamos/settings_panel/device_container.tscn" id="5_2fvy6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txpoc"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t6jug"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_twxhr"]
+texture = ExtResource("2_uruwd")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jrblc"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_so52p"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6ghl"]
+
+[node name="Deploy to SteamOS" type="PanelContainer"]
+offset_right = 600.0
+offset_bottom = 500.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_txpoc")
+script = ExtResource("1_sde4n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="LogoContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_t6jug")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/LogoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="LogoContainer" type="HBoxContainer" parent="VBoxContainer/LogoContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Icon" type="Panel" parent="VBoxContainer/LogoContainer/VBoxContainer/LogoContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_twxhr")
+
+[node name="DevkitPathLabel" type="Label" parent="VBoxContainer/LogoContainer/VBoxContainer/LogoContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Deploy to SteamOS"
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer/LogoContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 0.490196)
+theme_override_font_sizes/font_size = 12
+text = "Version 1.0.0"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_jrblc")
+
+[node name="SettingsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="BuildPathContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="BuildPathLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Build Path"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="BuildPathInput" type="LineEdit" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BrowseButton" type="Button" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+icon = ExtResource("3_w3m1c")
+
+[node name="StartParametersContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="StartParametersLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Parameters"
+
+[node name="StartParametersInput" type="LineEdit" parent="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CleanUploadContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="CleanUploadLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Clean Upload"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_r6ghl")
+
+[node name="CleanUploadCheckbox" type="CheckButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="PairContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" node_paths=PackedStringArray("_scanDeviceParent", "_manualPairingInputIp", "_manualPairingInputPort")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+script = ExtResource("4_iidhh")
+_scanDeviceParent = NodePath("DevicesContainer/VBoxContainer")
+_scanDeviceItemPrefab = ExtResource("5_2fvy6")
+_manualPairingInputIp = NodePath("ManualConnectContainer/HBoxContainer/ManualConnectInputIP")
+_manualPairingInputPort = NodePath("ManualConnectContainer/HBoxContainer/ManualConnectInputPort")
+
+[node name="DevicesContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/PairContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/PairContainer/DevicesContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PairContainer/DevicesContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="DevicesLabel" type="Label" parent="VBoxContainer/ScrollContainer/PairContainer/DevicesContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Devices"
+
+[node name="ScanButton" type="Button" parent="VBoxContainer/ScrollContainer/PairContainer/DevicesContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+text = "Scan for devices"
+
+[node name="ManualConnectContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/PairContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PairContainer/ManualConnectContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="ManualConnectInputIP" type="LineEdit" parent="VBoxContainer/ScrollContainer/PairContainer/ManualConnectContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "127.0.0.1"
+
+[node name="ManualConnectInputPort" type="LineEdit" parent="VBoxContainer/ScrollContainer/PairContainer/ManualConnectContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "32000"
+
+[node name="ManualConnectPairButton" type="Button" parent="VBoxContainer/ScrollContainer/PairContainer/ManualConnectContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+text = "Pair"
+
+[connection signal="visibility_changed" from="." to="." method="OnVisibilityChanged"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/PairContainer/DevicesContainer/VBoxContainer/Header/ScanButton" to="VBoxContainer/ScrollContainer/PairContainer" method="OnScanPressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/PairContainer/ManualConnectContainer/HBoxContainer/ManualConnectPairButton" to="VBoxContainer/ScrollContainer/PairContainer" method="OnManualPairPressed"]
