@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
+using Newtonsoft.Json;
 using Renci.SshNet;
+using Renci.SshNet.Common;
 using Zeroconf;
 
 /// <summary>
@@ -87,42 +89,86 @@ public class SteamOSDevkitManager
         return result;
     }
 
+    public static async Task CopyFiles(Device device, string localPath, string remotePath)
+    {
+        GD.Print("[CopyFiles] Starting");
+        
+        GD.Print($"[CopyFiles] Connecting to {device.Login}@{device.IPAdress}");
+        using var client = new ScpClient(GetSSHConnectionInfo(device));
+        await client.ConnectAsync(CancellationToken.None);
+        
+        // Run async method until upload is done
+        // TODO: Cleanup Progress
+        var taskCompletion = new TaskCompletionSource<bool>();
+        client.Uploading += (sender, e) =>
+        {
+            var progressPercentage = (double)e.Uploaded / e.Size * 100;
+            /*if (Math.Abs(progressPercentage - 100) < 0.1)
+            {
+                GD.Print($"[CopyFiles] Uploading {e.Filename}, progress: {progressPercentage}%");
+            }*/
+            if (e.Uploaded == e.Size)
+            {
+                taskCompletion.TrySetResult(true);
+            }
+        };
+        
+        GD.Print("[CopyFiles] Uploading files...");
+        
+        // TODO: "IsExecutable" permission is not set for executables
+        
+        await Task.Run(() => client.Upload(new DirectoryInfo(localPath), remotePath));
+        await taskCompletion.Task;
+        
+        GD.Print("[CopyFiles] Finished uploading.");
+        
+        client.Disconnect();
+        
+        /*  TODO: PROPOSED FIX
+         *    using var sshClient = new SshClient(GetSSHConnectionInfo(device));
+            await sshClient.ConnectAsync();
+            foreach (var file in new DirectoryInfo(localPath).GetFiles())
+            {
+                var response = sshClient.RunCommand($"chmod +x {Path.Combine(remotePath, file.Name)}");
+                if (response.ExitStatus != 0)
+                {
+                    GD.Print($"[CopyFiles] Error setting executable permission for {file.Name}: {response.Error}");
+                }
+            }
+            await sshClient.DisconnectAsync();
+            
+         */
+    }
+
     /// <summary>
     /// Runs an SSH command on the device that runs the steamos-prepare-upload script
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="gameId">An ID for the game</param>
     /// <returns>The CLI result</returns>
-    public static async Task<string> PrepareUpload(Device device, string gameId)
+    public static async Task<PrepareUploadResult> PrepareUpload(Device device, string gameId)
     {
         GD.Print("[PrepareUpload] Starting");
-
-        var command = "python3 ~/devkit-utils/steamos-prepare-upload --gameid ";
-        command += gameId + " ";
-        command += "{\"user\": \"" + device.Login + "\", \"directory\": \"/home/" + device.Login + "/devkit-game/" + gameId + "\"}";
-
-        // TODO: This doesn't seem to work
-        // TODO: python3 ~/devkit-utils/steamos-prepare-upload --gameid test1 {"user": "deck", "directory": "/home/deck/devkit-game/test1"}
-        var result = await RunSSHCommand(device, command);
-
-        GD.Print(result);
+        
+        var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId);
+        var result = JsonConvert.DeserializeObject<PrepareUploadResult>(resultRaw);
 
         return result;
     }
 
-    public static async void Upload(Device device, string path)
-    {
-        GD.Print("[Upload] Starting");
-        
-        // TODO: RSync files
-    }
-
     
-    public static async void CreateShortcut(Device device, CreateShortcutParameters parameters)
+    public static async Task<CreateShortcutResult> CreateShortcut(Device device, CreateShortcutParameters parameters)
     {
         GD.Print("[CreateShortcut] Starting");
         
         // TODO: python3 ~/devkit-utils/steam-client-create-shortcut --parms '{"gameid": "test1", "directory": "/home/deck/devkit-game/test1", "argv": ["demo1.x86_64"], "settings": {"steam_play": "0"}}'
+        var parametersJson = JsonConvert.SerializeObject(parameters);
+        var command = $"python3 ~/devkit-utils/steam-client-create-shortcut --parms '{parametersJson}'";
+        
+        var resultRaw = await RunSSHCommand(device, command);
+        var result = JsonConvert.DeserializeObject<CreateShortcutResult>(resultRaw);
+
+        return result;
     }
 
     /// <summary>
@@ -139,15 +185,27 @@ public class SteamOSDevkitManager
         public string Devkit1;
     }
 
+    public class PrepareUploadResult
+    {
+        public string User { get; set; }
+        public string Directory { get; set; }
+    }
+
+    public class CreateShortcutResult
+    {
+        public string Error { get; set; }
+        public string Success { get; set; }
+    }
+
     /// <summary>
     /// Parameters for the CreateShortcut method
     /// </summary>
     public struct CreateShortcutParameters
     {
-        public string GameId;
-        public string Path;
-        public string[] Arguments;
-        public Dictionary<string, string> Settings;
+        public string gameid;
+        public string directory;
+        public string[] argv;
+        public Dictionary<string, string> settings;
     }
 
     /// <summary>
