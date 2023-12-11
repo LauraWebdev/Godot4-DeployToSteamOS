@@ -4,6 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://p64nkj5ii2xt" path="res://addons/deploy_to_steamos/add_device_window/device_item_prefab.tscn" id="2_dka1k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mam6h"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
 bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_74135"]
@@ -23,6 +27,7 @@ bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 title = "Add devkit device"
 initial_position = 1
 size = Vector2i(650, 500)
+transient = true
 exclusive = true
 min_size = Vector2i(650, 500)
 script = ExtResource("1_3tepc")
@@ -71,6 +76,7 @@ alignment = 2
 
 [node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "Refresh"
 
 [node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer"]
@@ -78,5 +84,6 @@ layout_mode = 2
 text = "Close"
 
 [connection signal="close_requested" from="." to="." method="Close"]
+[connection signal="visibility_changed" from="." to="." method="OnVisibilityChanged"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer/RefreshButton" to="." method="UpdateDevices"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer/CloseButton" to="." method="Close"]

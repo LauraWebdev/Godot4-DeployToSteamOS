@@ -4,6 +4,7 @@ using Godot;
 [Tool]
 public partial class AddDeviceWindow : Window
 {
+	private bool _isVisible;
 	private bool _isUpdatingDevices;
 	private float _scanCooldown;
 	private List<SteamOSDevkitManager.Device> _scannedDevices = new();
@@ -15,7 +16,7 @@ public partial class AddDeviceWindow : Window
 
 	public override void _Process(double delta)
 	{
-		if (!Visible) return;
+		if (!_isVisible) return;
 		
 		_scanCooldown -= (float)delta;
 		if (_scanCooldown < 0f)
@@ -66,5 +67,19 @@ public partial class AddDeviceWindow : Window
 	{
 		// TODO: Notify DeployDock to Update the Dropdown
 		Hide();
+	}
+
+	public void OnVisibilityChanged()
+	{
+		if (Visible)
+		{
+			GD.Print("Visible Now");
+			_isVisible = true;
+		}
+		else
+		{
+			GD.Print("Invisible Now");
+			_isVisible = false;
+		}
 	}
 }

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 [Tool]
 public partial class DeployDock : PanelContainer
@@ -8,7 +9,8 @@ public partial class DeployDock : PanelContainer
     
     [Export] private OptionButton _deployTargetButton;
     [Export] private Button _deployButton;
-    [Export] private Window _addDeviceWindow;
+    [Export] private AddDeviceWindow _addDeviceWindow;
+    [Export] private DeployWindow _deployWindow;
 
     public void OnDeployTargetItemSelected(int index)
     {
@@ -28,8 +30,15 @@ public partial class DeployDock : PanelContainer
         _deployButton.Disabled = _selectedId is < 1 or > 9998;
     }
 
-    public void Deploy()
+    public async void Deploy()
     {
         GD.Print("Deploying Project to: " + _selectedId);
+
+        // DEBUG
+        var devices = await SteamOSDevkitManager.ScanDevices();
+        _deployWindow.Deploy(devices.FirstOrDefault());
+        // /DEBUG
+
+        // TODO: Connect to DeployWindow.Deploy(device)
     }
 }

@@ -5,7 +5,6 @@ using Godot;
 public class GodotExportManager
 {
     public static void ExportProject(
-        string godotExecutablePath,
         string projectPath,
         string outputPath,
         bool isReleaseBuild,
@@ -19,7 +18,7 @@ public class GodotExportManager
         
         Process exportProcess = new Process();
         
-        exportProcess.StartInfo.FileName = godotExecutablePath;
+        exportProcess.StartInfo.FileName = OS.GetExecutablePath();
 
         var arguments = $"--headless --path \"{projectPath}\" ";
         arguments += isReleaseBuild ? "--export-release " : "--export-debug ";

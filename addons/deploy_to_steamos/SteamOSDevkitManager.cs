@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Godot;
 using Newtonsoft.Json;
 using Renci.SshNet;
-using Renci.SshNet.Common;
 using Zeroconf;
 
 /// <summary>
