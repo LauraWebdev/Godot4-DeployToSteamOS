@@ -26,7 +26,8 @@ public partial class DeployWindow : Window
 			GD.PrintErr("[DeployToSteamOS] Device is not available.");
 			return;
 		}
-		
+
+		Title = $"Deploying to {device.DisplayName} ({device.Login}@{device.IPAdress})";
 		Show();
 
 		var gameId = ProjectSettings.GetSetting("application/config/name", "game").AsString();
