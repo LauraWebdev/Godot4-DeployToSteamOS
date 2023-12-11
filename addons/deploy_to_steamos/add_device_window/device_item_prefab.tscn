@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://p64nkj5ii2xt"]
+
+[ext_resource type="Script" path="res://addons/deploy_to_steamos/add_device_window/DeviceItemPrefab.cs" id="1_q77lw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6g2hd"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="DeviceItemPrefab" type="PanelContainer" node_paths=PackedStringArray("_deviceNameLabel")]
+offset_right = 532.0
+offset_bottom = 51.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6g2hd")
+script = ExtResource("1_q77lw")
+_deviceNameLabel = NodePath("HBoxContainer/DeviceNameLabel")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="DeviceNameLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "steamdeck (deck@127.0.0.1)"
+
+[node name="PairButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+text = "Pair"
+
+[connection signal="pressed" from="HBoxContainer/PairButton" to="." method="Pair"]

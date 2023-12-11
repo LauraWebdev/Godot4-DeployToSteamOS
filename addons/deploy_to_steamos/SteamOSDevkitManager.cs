@@ -74,8 +74,6 @@ public class SteamOSDevkitManager
     /// <returns>The SSH CLI output</returns>
     public static async Task<string> RunSSHCommand(Device device, string command)
     {
-        GD.Print("[RunSSHCommand] Starting");
-        
         GD.Print($"[RunSSHCommand] Connecting to {device.Login}@{device.IPAdress}");
         using var client = new SshClient(GetSSHConnectionInfo(device));
         await client.ConnectAsync(CancellationToken.None);
@@ -91,11 +89,11 @@ public class SteamOSDevkitManager
 
     public static async Task CopyFiles(Device device, string localPath, string remotePath)
     {
-        GD.Print("[CopyFiles] Starting");
-        
         GD.Print($"[CopyFiles] Connecting to {device.Login}@{device.IPAdress}");
         using var client = new ScpClient(GetSSHConnectionInfo(device));
         await client.ConnectAsync(CancellationToken.None);
+        
+        GD.Print("[CopyFiles] Uploading files...");
         
         // Run async method until upload is done
         // TODO: Cleanup Progress
@@ -103,41 +101,19 @@ public class SteamOSDevkitManager
         client.Uploading += (sender, e) =>
         {
             var progressPercentage = (double)e.Uploaded / e.Size * 100;
-            /*if (Math.Abs(progressPercentage - 100) < 0.1)
-            {
-                GD.Print($"[CopyFiles] Uploading {e.Filename}, progress: {progressPercentage}%");
-            }*/
+            GD.Print($"[CopyFiles] Uploading {e.Filename}, progress: {progressPercentage}%");
             if (e.Uploaded == e.Size)
             {
                 taskCompletion.TrySetResult(true);
             }
         };
         
-        GD.Print("[CopyFiles] Uploading files...");
-        
-        // TODO: "IsExecutable" permission is not set for executables
-        
         await Task.Run(() => client.Upload(new DirectoryInfo(localPath), remotePath));
         await taskCompletion.Task;
-        
-        GD.Print("[CopyFiles] Finished uploading.");
-        
         client.Disconnect();
         
-        /*  TODO: PROPOSED FIX
-         *    using var sshClient = new SshClient(GetSSHConnectionInfo(device));
-            await sshClient.ConnectAsync();
-            foreach (var file in new DirectoryInfo(localPath).GetFiles())
-            {
-                var response = sshClient.RunCommand($"chmod +x {Path.Combine(remotePath, file.Name)}");
-                if (response.ExitStatus != 0)
-                {
-                    GD.Print($"[CopyFiles] Error setting executable permission for {file.Name}: {response.Error}");
-                }
-            }
-            await sshClient.DisconnectAsync();
-            
-         */
+        GD.Print("[CopyFiles] Fixing file permissions");
+        await RunSSHCommand(device, $"chmod +x -R {remotePath}");
     }
 
     /// <summary>
@@ -148,7 +124,7 @@ public class SteamOSDevkitManager
     /// <returns>The CLI result</returns>
     public static async Task<PrepareUploadResult> PrepareUpload(Device device, string gameId)
     {
-        GD.Print("[PrepareUpload] Starting");
+        GD.Print("[PrepareUpload] Preparing Upload");
         
         var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId);
         var result = JsonConvert.DeserializeObject<PrepareUploadResult>(resultRaw);
@@ -159,7 +135,7 @@ public class SteamOSDevkitManager
     
     public static async Task<CreateShortcutResult> CreateShortcut(Device device, CreateShortcutParameters parameters)
     {
-        GD.Print("[CreateShortcut] Starting");
+        GD.Print("[CreateShortcut] Creating Shortcut");
         
         // TODO: python3 ~/devkit-utils/steam-client-create-shortcut --parms '{"gameid": "test1", "directory": "/home/deck/devkit-game/test1", "argv": ["demo1.x86_64"], "settings": {"steam_play": "0"}}'
         var parametersJson = JsonConvert.SerializeObject(parameters);
@@ -220,7 +196,7 @@ public class SteamOSDevkitManager
             // TODO: Linux Support
             case PlatformID.Win32NT:
                 // TODO: Test for Windows
-                applicationDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+                applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "steamos-devkit");
                 break;
             case PlatformID.Unix:
                 applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Library", "Application Support"); 
@@ -243,7 +219,6 @@ public class SteamOSDevkitManager
     public static ConnectionInfo GetSSHConnectionInfo(Device device)
     {
         var privateKeyPath = GetPrivateKeyPath();
-        GD.Print(privateKeyPath);
         if (!File.Exists(privateKeyPath)) throw new Exception("devkit_rsa key is missing. Have you connected to your device via the official devkit UI yet?");
         
         var privateKeyFile = new PrivateKeyFile(privateKeyPath);

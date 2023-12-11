@@ -17,43 +17,36 @@ public partial class PairContainer : VBoxContainer
 	{
 		// TODO: Clear Devices
 		
-		GD.Print("Scanning Devices");
-
 		var devices = await SteamOSDevkitManager.ScanDevices();
 		GD.Print($"Scanned {devices.Count} devices in network.");
 
 		// DEBUG
 		GD.Print("Prepare for Debug");
-		var device = devices.FirstOrDefault(x => x.DisplayName == "taradeck");
+		var device = devices.FirstOrDefault();
 		var deleteResult = await SteamOSDevkitManager.RunSSHCommand(device, "rm -rf /home/deck/devkit-game/*");
 		GD.Print(deleteResult);
 		// /DEBUG
 
-		GD.Print("Running PrepareUpload");
-		var uploadResult = await SteamOSDevkitManager.PrepareUpload(device, "test3");
-		GD.Print(uploadResult);
-
-		var lsResult = await SteamOSDevkitManager.RunSSHCommand(device, "ls /home/deck/devkit-game");
-		GD.Print(lsResult);
+		var uploadResult = await SteamOSDevkitManager.PrepareUpload(device, "test5");
+		GD.Print(uploadResult.Directory);
 		
-		GD.Print("Copying folder");
-		await SteamOSDevkitManager.CopyFiles(device, "/Users/laura/Development/godot4-deploytosteamos_tests/test1", uploadResult.Directory);
-
-		var lsGameResult = await SteamOSDevkitManager.RunSSHCommand(device, "ls " + uploadResult.Directory);
-		GD.Print(lsGameResult);
+		await SteamOSDevkitManager.CopyFiles(device, @"C:\Users\hello\Development\Godot4-DeployToSteamOS-Builds\", uploadResult.Directory);
 
 		var createShortcutParameters = new SteamOSDevkitManager.CreateShortcutParameters
 		{
-			gameid = "test3",
+			gameid = "test5",
 			directory = uploadResult.Directory,
-			argv = new[] { "demo1.x86_64" },
+			argv = new[] { "game.x86_64" },
 			settings = new Dictionary<string, string>
 			{
 				{ "steam_play", "0" }
 			},
 		};
 		var createShortcutResult = await SteamOSDevkitManager.CreateShortcut(device, createShortcutParameters);
-		GD.Print(createShortcutResult);
+		GD.Print(createShortcutResult.Success);
+		GD.Print(createShortcutResult.Error);
+		
+		GD.Print("Done.");
 
 		// TODO: Update UI
 

@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://kdbpdei4v1ub"]
+
+[ext_resource type="Script" path="res://addons/deploy_to_steamos/deploy_dock/DeployDock.cs" id="1_atc6e"]
+[ext_resource type="Texture2D" uid="uid://bjlqpiaahmp37" path="res://logo_bright.svg" id="2_rpj28"]
+[ext_resource type="PackedScene" uid="uid://6be5afncp3nr" path="res://addons/deploy_to_steamos/add_device_window/add_device_window.tscn" id="3_qfyb3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ebqha"]
+content_margin_left = 10.0
+
+[node name="DeployDock" type="PanelContainer" node_paths=PackedStringArray("_deployTargetButton", "_deployButton", "_addDeviceWindow")]
+offset_right = 337.0
+offset_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ebqha")
+script = ExtResource("1_atc6e")
+_deployTargetButton = NodePath("HBoxContainer/DeployTargetButton")
+_deployButton = NodePath("HBoxContainer/DeployButton")
+_addDeviceWindow = NodePath("AddDeviceWindow")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="DeployTargetButton" type="OptionButton" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 4
+selected = 0
+popup/item_0/text = "None"
+popup/item_0/id = 0
+popup/item_1/text = "lauradeck (deck@192.168.2.173)"
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/id = 9999
+popup/item_2/separator = true
+popup/item_3/text = "Add devkit device"
+popup/item_3/id = 10000
+
+[node name="DeployButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+disabled = true
+icon = ExtResource("2_rpj28")
+icon_alignment = 1
+expand_icon = true
+
+[node name="AddDeviceWindow" parent="." instance=ExtResource("3_qfyb3")]
+visible = false
+
+[connection signal="item_selected" from="HBoxContainer/DeployTargetButton" to="." method="OnDeployTargetItemSelected"]
+[connection signal="pressed" from="HBoxContainer/DeployButton" to="." method="Deploy"]

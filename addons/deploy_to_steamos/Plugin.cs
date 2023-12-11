@@ -9,7 +9,7 @@ public partial class Plugin : EditorPlugin
 	
 	public override void _EnterTree()
 	{
-		_dock = GD.Load<PackedScene>("res://addons/deploy_to_steamos/dock.tscn").Instantiate<Control>();
+		_dock = GD.Load<PackedScene>("res://addons/deploy_to_steamos/deploy_dock/deploy_dock.tscn").Instantiate<Control>();
 		_settingsPanel = GD.Load<PackedScene>("res://addons/deploy_to_steamos/settings_panel/settings_panel.tscn").Instantiate<Control>();
 		
 		AddControlToContainer(CustomControlContainer.Toolbar, _dock);
