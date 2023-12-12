@@ -8,13 +8,12 @@ public class GodotExportManager
         string projectPath,
         string outputPath,
         bool isReleaseBuild,
-        Action<string> onOutputDataReceived = null,
-        Action onProcessExited = null)
+        Callable logCallable,
+        Action OnProcessExited = null)
     {
-        GD.Print("[GodotExportManager] Starting Project Export");
-        
-        GD.Print("[GodotExportManager] Output: " + outputPath);
-        GD.Print("[GodotExportManager] Release: " + (isReleaseBuild ? "Yes" : "No"));
+        logCallable.CallDeferred("Starting project export, this may take a while.");
+        logCallable.CallDeferred($"Output path: {outputPath}");
+        logCallable.CallDeferred($"Is Release Build: {(isReleaseBuild ? "Yes" : "No")}");
         
         Process exportProcess = new Process();
         
@@ -29,19 +28,24 @@ public class GodotExportManager
         exportProcess.StartInfo.UseShellExecute = false;
         exportProcess.StartInfo.RedirectStandardOutput = true;
         exportProcess.EnableRaisingEvents = true;
+
+        exportProcess.ErrorDataReceived += (sender, args) =>
+        {
+            throw new Exception("Error while building project: " + args.Data);
+        }; 
         
         exportProcess.OutputDataReceived += (sender, args) =>
         {
-            onOutputDataReceived?.Invoke(args.Data);
+            logCallable.CallDeferred(args.Data);
         };
 
         exportProcess.Exited += (sender, args) =>
         {
-            onProcessExited?.Invoke();
+            OnProcessExited?.Invoke();
+            exportProcess.WaitForExit();
         };
 
         exportProcess.Start();
         exportProcess.BeginOutputReadLine();
-        exportProcess.WaitForExit();
     }
 }

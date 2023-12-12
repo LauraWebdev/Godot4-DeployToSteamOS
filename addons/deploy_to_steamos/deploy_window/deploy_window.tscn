@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://ds2umdqybfls8"]
+[gd_scene load_steps=17 format=3 uid="uid://ds2umdqybfls8"]
 
 [ext_resource type="Script" path="res://addons/deploy_to_steamos/deploy_window/DeployWindow.cs" id="1_01184"]
 
@@ -9,20 +9,73 @@ content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egb88"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e8gqy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lhk4y"]
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_asgva"]
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+bg_color = Color(0.113725, 0.113725, 0.113725, 1)
 
-[node name="DeployWindow" type="Window"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7uvru"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ojxav"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e3114"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqti7"]
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ok20f"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.113725, 0.113725, 0.113725, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aj0up"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_td6y3"]
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_017mf"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.113725, 0.113725, 0.113725, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_encuu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esvxa"]
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgegm"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.113725, 0.113725, 0.113725, 1)
+
+[node name="DeployWindow" type="Window" node_paths=PackedStringArray("_buildingContainer", "_prepareUploadContainer", "_uploadingContainer", "_createShortcutContainer")]
 title = "Deploying to steamdeck (deck@127.0.0.1)"
 initial_position = 1
-size = Vector2i(650, 500)
+size = Vector2i(450, 600)
 transient = true
-min_size = Vector2i(650, 500)
+min_size = Vector2i(450, 600)
 script = ExtResource("1_01184")
+_buildingContainer = NodePath("PanelContainer/VBoxContainer/BuildContainer")
+_prepareUploadContainer = NodePath("PanelContainer/VBoxContainer/PrepareUploadContainer")
+_uploadingContainer = NodePath("PanelContainer/VBoxContainer/UploadContainer")
+_createShortcutContainer = NodePath("PanelContainer/VBoxContainer/CreateShortcutContainer")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 anchors_preset = 15
@@ -40,40 +93,195 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="BuildContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_egb88")
+size_flags_vertical = 0
+theme_override_constants/separation = 0
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer"]
+[node name="Progressbar" type="ProgressBar" parent="PanelContainer/VBoxContainer/BuildContainer"]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_styles/background = SubResource("StyleBoxEmpty_e8gqy")
+theme_override_styles/fill = SubResource("StyleBoxFlat_lhk4y")
+show_percentage = false
+
+[node name="HeaderContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/BuildContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_asgva")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/BuildContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/BuildContainer/HeaderContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.415686, 0.415686, 0.415686, 1)
 text = "Building Project"
 
-[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="ToggleConsoleButton" type="Button" parent="PanelContainer/VBoxContainer/BuildContainer/HeaderContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_egb88")
+disabled = true
+text = "Output"
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer2"]
+[node name="ConsoleContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/BuildContainer"]
+visible = false
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7uvru")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/BuildContainer/ConsoleContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ojxav")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/BuildContainer/ConsoleContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="PrepareUploadContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="Progressbar" type="ProgressBar" parent="PanelContainer/VBoxContainer/PrepareUploadContainer"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxEmpty_e3114")
+theme_override_styles/fill = SubResource("StyleBoxFlat_gqti7")
+show_percentage = false
+
+[node name="HeaderContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PrepareUploadContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ok20f")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/PrepareUploadContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PrepareUploadContainer/HeaderContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.415686, 0.415686, 0.415686, 1)
 text = "Preparing Upload"
 
-[node name="PanelContainer3" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="ToggleConsoleButton" type="Button" parent="PanelContainer/VBoxContainer/PrepareUploadContainer/HeaderContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_egb88")
+disabled = true
+text = "Output"
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer3"]
+[node name="ConsoleContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/PrepareUploadContainer"]
+visible = false
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7uvru")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/PrepareUploadContainer/ConsoleContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ojxav")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PrepareUploadContainer/ConsoleContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="UploadContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Progressbar" type="ProgressBar" parent="PanelContainer/VBoxContainer/UploadContainer"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxEmpty_aj0up")
+theme_override_styles/fill = SubResource("StyleBoxFlat_td6y3")
+show_percentage = false
+
+[node name="HeaderContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/UploadContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_017mf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/UploadContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/UploadContainer/HeaderContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.415686, 0.415686, 0.415686, 1)
 text = "Uploading Project"
 
-[node name="PanelContainer4" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="ToggleConsoleButton" type="Button" parent="PanelContainer/VBoxContainer/UploadContainer/HeaderContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_egb88")
+disabled = true
+text = "Output"
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer4"]
+[node name="ConsoleContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/UploadContainer"]
+visible = false
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7uvru")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/UploadContainer/ConsoleContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ojxav")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/UploadContainer/ConsoleContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="CreateShortcutContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Progressbar" type="ProgressBar" parent="PanelContainer/VBoxContainer/CreateShortcutContainer"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxEmpty_encuu")
+theme_override_styles/fill = SubResource("StyleBoxFlat_esvxa")
+show_percentage = false
+
+[node name="HeaderContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/CreateShortcutContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dgegm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/CreateShortcutContainer/HeaderContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/CreateShortcutContainer/HeaderContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.415686, 0.415686, 0.415686, 1)
 text = "Creating Shortcut"
 
+[node name="ToggleConsoleButton" type="Button" parent="PanelContainer/VBoxContainer/CreateShortcutContainer/HeaderContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Output"
+
+[node name="ConsoleContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/CreateShortcutContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7uvru")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/CreateShortcutContainer/ConsoleContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ojxav")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/CreateShortcutContainer/ConsoleContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
 [connection signal="close_requested" from="." to="." method="Close"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/BuildContainer/HeaderContainer/HBoxContainer/ToggleConsoleButton" to="." method="OnBuildingConsolePressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/PrepareUploadContainer/HeaderContainer/HBoxContainer/ToggleConsoleButton" to="." method="OnPrepareUploadConsolePressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/UploadContainer/HeaderContainer/HBoxContainer/ToggleConsoleButton" to="." method="OnUploadingConsolePressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/CreateShortcutContainer/HeaderContainer/HBoxContainer/ToggleConsoleButton" to="." method="OnCreatingShortcutConsolePressed"]

@@ -70,14 +70,15 @@ public class SteamOSDevkitManager
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="command">The SSH command to run</param>
+    /// <param name="OnLog">An action for logging</param>
     /// <returns>The SSH CLI output</returns>
-    public static async Task<string> RunSSHCommand(Device device, string command)
+    public static async Task<string> RunSSHCommand(Device device, string command, Callable logCallable)
     {
-        GD.Print($"[RunSSHCommand] Connecting to {device.Login}@{device.IPAdress}");
+        logCallable.CallDeferred($"Connecting to {device.Login}@{device.IPAdress}");
         using var client = new SshClient(GetSSHConnectionInfo(device));
         await client.ConnectAsync(CancellationToken.None);
         
-        GD.Print($"[RunSSHCommand] Command: '{command}'");
+        logCallable.CallDeferred($"Command: '{command}'");
         var sshCommand = client.CreateCommand(command);
         var result = await Task.Factory.FromAsync(sshCommand.BeginExecute(), sshCommand.EndExecute);
 
@@ -86,21 +87,42 @@ public class SteamOSDevkitManager
         return result;
     }
 
-    public static async Task CopyFiles(Device device, string localPath, string remotePath)
+    /// <summary>
+    /// Creates a new SCP connection and copies all local files to a remote path
+    /// </summary>
+    /// <param name="device">A SteamOS devkit device</param>
+    /// <param name="localPath">The path on the host</param>
+    /// <param name="remotePath">The path on the device</param>
+    /// <param name="OnLog">An action for logging</param>
+    public static async Task CopyFiles(Device device, string localPath, string remotePath, Callable logCallable)
     {
-        GD.Print($"[CopyFiles] Connecting to {device.Login}@{device.IPAdress}");
+        logCallable.CallDeferred($"Connecting to {device.Login}@{device.IPAdress}");
         using var client = new ScpClient(GetSSHConnectionInfo(device));
         await client.ConnectAsync(CancellationToken.None);
         
-        GD.Print("[CopyFiles] Uploading files...");
+        logCallable.CallDeferred($"Uploading files");
         
         // Run async method until upload is done
-        // TODO: Cleanup Progress
+        // TODO: Set Progress based on files
+        // TODO: Check files on remote for incremental builds
+        var lastUploadedFilename = "";
+        var uploadProgress = 0;
         var taskCompletion = new TaskCompletionSource<bool>();
         client.Uploading += (sender, e) =>
         {
-            var progressPercentage = (double)e.Uploaded / e.Size * 100;
-            GD.Print($"[CopyFiles] Uploading {e.Filename}, progress: {progressPercentage}%");
+            if (e.Filename != lastUploadedFilename)
+            {
+                lastUploadedFilename = e.Filename;
+                uploadProgress = 0;
+            }
+            var progressPercentage = Mathf.CeilToInt((double)e.Uploaded / e.Size * 100);
+
+            if (progressPercentage != uploadProgress)
+            {
+                uploadProgress = progressPercentage;
+                logCallable.CallDeferred($"Uploading {lastUploadedFilename} ({progressPercentage}%)");
+            }
+
             if (e.Uploaded == e.Size)
             {
                 taskCompletion.TrySetResult(true);
@@ -111,8 +133,8 @@ public class SteamOSDevkitManager
         await taskCompletion.Task;
         client.Disconnect();
         
-        GD.Print("[CopyFiles] Fixing file permissions");
-        await RunSSHCommand(device, $"chmod +x -R {remotePath}");
+        logCallable.CallDeferred($"Fixing file permissions");
+        await RunSSHCommand(device, $"chmod +x -R {remotePath}", logCallable);
     }
 
     /// <summary>
@@ -120,27 +142,31 @@ public class SteamOSDevkitManager
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="gameId">An ID for the game</param>
+    /// <param name="OnLog">An action for logging</param>
     /// <returns>The CLI result</returns>
-    public static async Task<PrepareUploadResult> PrepareUpload(Device device, string gameId)
+    public static async Task<PrepareUploadResult> PrepareUpload(Device device, string gameId, Callable logCallable)
     {
-        GD.Print("[PrepareUpload] Preparing Upload");
+        logCallable.CallDeferred("Preparing upload");
         
-        var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId);
+        var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId, logCallable);
         var result = JsonConvert.DeserializeObject<PrepareUploadResult>(resultRaw);
 
         return result;
     }
-
     
-    public static async Task<CreateShortcutResult> CreateShortcut(Device device, CreateShortcutParameters parameters)
+    /// <summary>
+    /// Runs an SSH command on the device that runs the steamos-create-shortcut script
+    /// </summary>
+    /// <param name="device">A SteamOS devkit device</param>
+    /// <param name="parameters">Parameters for the shortcut</param>
+    /// <param name="OnLog">An action for logging</param>
+    /// <returns>The CLI result</returns>
+    public static async Task<CreateShortcutResult> CreateShortcut(Device device, CreateShortcutParameters parameters, Callable logCallable)
     {
-        GD.Print("[CreateShortcut] Creating Shortcut");
-        
-        // TODO: python3 ~/devkit-utils/steam-client-create-shortcut --parms '{"gameid": "test1", "directory": "/home/deck/devkit-game/test1", "argv": ["demo1.x86_64"], "settings": {"steam_play": "0"}}'
         var parametersJson = JsonConvert.SerializeObject(parameters);
         var command = $"python3 ~/devkit-utils/steam-client-create-shortcut --parms '{parametersJson}'";
         
-        var resultRaw = await RunSSHCommand(device, command);
+        var resultRaw = await RunSSHCommand(device, command, logCallable);
         var result = JsonConvert.DeserializeObject<CreateShortcutResult>(resultRaw);
 
         return result;
