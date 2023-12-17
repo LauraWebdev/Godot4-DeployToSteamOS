@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Godot;
 
+namespace Laura.DeployToSteamOS;
+
 [Tool]
 public partial class AddDeviceWindow : Window
 {
@@ -73,12 +75,10 @@ public partial class AddDeviceWindow : Window
 	{
 		if (Visible)
 		{
-			GD.Print("Visible Now");
 			_isVisible = true;
 		}
 		else
 		{
-			GD.Print("Invisible Now");
 			_isVisible = false;
 		}
 	}

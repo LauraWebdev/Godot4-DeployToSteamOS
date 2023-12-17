@@ -1,6 +1,7 @@
-using Godot;
-using System;
 using System.Linq;
+using Godot;
+
+namespace Laura.DeployToSteamOS;
 
 [Tool]
 public partial class DeployDock : PanelContainer

@@ -1,8 +1,8 @@
-using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Godot;
+
+namespace Laura.DeployToSteamOS;
 
 public partial class DeployWindow
 {

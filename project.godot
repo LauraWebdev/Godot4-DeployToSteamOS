@@ -15,6 +15,10 @@ run/main_scene="res://demo/demo.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SettingsManager="*res://addons/deploy_to_steamos/SettingsManager.cs"
+
 [dotnet]
 
 project/assembly_name="Godot4-DeployToSteamOS"

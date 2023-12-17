@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using Godot;
 
+namespace Laura.DeployToSteamOS;
+
 public class GodotExportManager
 {
     public static void ExportProject(

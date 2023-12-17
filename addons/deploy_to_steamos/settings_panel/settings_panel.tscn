@@ -35,11 +35,16 @@ content_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6ghl"]
 
-[node name="Deploy to SteamOS" type="PanelContainer"]
+[node name="Deploy to SteamOS" type="PanelContainer" node_paths=PackedStringArray("_versionLabel", "_buildPathLineEdit", "_buildPathFileDialog", "_startParametersLineEdit", "_uploadMethodOptionButton")]
 offset_right = 600.0
 offset_bottom = 500.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_txpoc")
 script = ExtResource("1_sde4n")
+_versionLabel = NodePath("VBoxContainer/LogoContainer/VBoxContainer/VersionLabel")
+_buildPathLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput")
+_buildPathFileDialog = NodePath("BuildPathFileDialog")
+_startParametersLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput")
+_uploadMethodOptionButton = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -87,33 +92,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="GodotPathContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/GodotPathContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="GodotPathLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/GodotPathContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Godot Path"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/GodotPathContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 5
-
-[node name="GodotPathInput" type="LineEdit" parent="VBoxContainer/ScrollContainer/SettingsContainer/GodotPathContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="BrowseButton" type="Button" parent="VBoxContainer/ScrollContainer/SettingsContainer/GodotPathContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/icon_max_width = 20
-icon = ExtResource("3_w3m1c")
-
 [node name="BuildPathContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
@@ -158,48 +136,45 @@ text = "Start Parameters"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CleanUploadContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
+[node name="UploadMethodContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="CleanUploadLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer"]
+[node name="UploadMethodLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Clean Upload"
+text = "Upload Method"
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_r6ghl")
 
-[node name="CleanUploadCheckbox" type="CheckButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/CleanUploadContainer/HBoxContainer/PanelContainer"]
+[node name="UploadMethodOptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
+item_count = 3
+selected = 0
+popup/item_0/text = "Differential"
+popup/item_0/id = 0
+popup/item_1/text = "Incremental"
+popup/item_1/id = 1
+popup/item_2/text = "CleanReplace"
+popup/item_2/id = 2
 
-[node name="IncrementalUploadContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/IncrementalUploadContainer"]
-layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="IncrementalUploadLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/IncrementalUploadContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Incremental Upload"
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/IncrementalUploadContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_r6ghl")
-
-[node name="IncrementalUploadCheckbox" type="CheckButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/IncrementalUploadContainer/HBoxContainer/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
+[node name="BuildPathFileDialog" type="FileDialog" parent="."]
+title = "Open a Directory"
+size = Vector2i(454, 159)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
 
 [connection signal="visibility_changed" from="." to="." method="OnVisibilityChanged"]
+[connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput" to="." method="BuildPathTextChanged"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BrowseButton" to="." method="BuildPathOpenFileDialog"]
+[connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput" to="." method="StartParametersTextChanged"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton" to="." method="UploadMethodItemSelected"]
+[connection signal="dir_selected" from="BuildPathFileDialog" to="." method="BuildPathTextChanged"]

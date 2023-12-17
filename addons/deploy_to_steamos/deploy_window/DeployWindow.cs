@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Godot;
 
+namespace Laura.DeployToSteamOS;
+
 [Tool]
 public partial class DeployWindow : Window
 {
@@ -302,6 +304,15 @@ public partial class DeployWindow : Window
 		if (consoleContainer == null) return;
 		
 		SetConsoleVisibility(step, !consoleContainer.Visible, CurrentStep == DeployStep.Done);
+	}
+
+	private void UpdateUIToFail()
+	{
+		CurrentProgress = StepProgress.Failed;
+		UpdateUI();
+		CurrentStep = DeployStep.Done;
+		CurrentProgress = StepProgress.Queued;
+		UpdateUI();
 	}
 
 	public void OnBuildingConsolePressed()

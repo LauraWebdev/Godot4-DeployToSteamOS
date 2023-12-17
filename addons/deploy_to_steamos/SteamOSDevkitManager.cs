@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Renci.SshNet;
 using Zeroconf;
 
+namespace Laura.DeployToSteamOS;
+
 /// <summary>
 /// Scans the network for SteamOS Devkit devices via the ZeroConf / Bonjour protocol
 /// </summary>

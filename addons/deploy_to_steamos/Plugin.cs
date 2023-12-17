@@ -1,6 +1,8 @@
 #if TOOLS
 using Godot;
 
+namespace Laura.DeployToSteamOS;
+
 [Tool]
 public partial class Plugin : EditorPlugin
 {
@@ -14,12 +16,16 @@ public partial class Plugin : EditorPlugin
 		
 		AddControlToContainer(CustomControlContainer.Toolbar, _dock);
 		AddControlToContainer(CustomControlContainer.ProjectSettingTabRight, _settingsPanel);
+		
+		AddAutoloadSingleton("SettingsManager", "res://addons/deploy_to_steamos/SettingsManager.cs");
 	}
 
 	public override void _ExitTree()
 	{
 		RemoveControlFromContainer(CustomControlContainer.Toolbar, _dock);
 		RemoveControlFromContainer(CustomControlContainer.ProjectSettingTabRight, _settingsPanel);
+		
+		RemoveAutoloadSingleton("SettingsManager");
 		
 		_dock.Free();
 	}

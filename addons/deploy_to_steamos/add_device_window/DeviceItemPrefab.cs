@@ -1,5 +1,7 @@
 using Godot;
 
+namespace Laura.DeployToSteamOS;
+
 [Tool]
 public partial class DeviceItemPrefab : PanelContainer
 {
