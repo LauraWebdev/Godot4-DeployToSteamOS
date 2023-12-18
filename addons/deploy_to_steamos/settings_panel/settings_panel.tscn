@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://c8k27e2fcl21j"]
+[gd_scene load_steps=11 format=3 uid="uid://c8k27e2fcl21j"]
 
 [ext_resource type="Script" path="res://addons/deploy_to_steamos/settings_panel/SettingsPanel.cs" id="1_sde4n"]
 [ext_resource type="Texture2D" uid="uid://bjlqpiaahmp37" path="res://logo_bright.svg" id="2_uruwd"]
 [ext_resource type="Texture2D" uid="uid://du661vtsmqc7h" path="res://addons/deploy_to_steamos/folder.svg" id="3_w3m1c"]
+[ext_resource type="PackedScene" uid="uid://6be5afncp3nr" path="res://addons/deploy_to_steamos/add_device_window/add_device_window.tscn" id="4_yoa1a"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_txpoc"]
 content_margin_left = 15.0
@@ -35,12 +36,13 @@ content_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6ghl"]
 
-[node name="Deploy to SteamOS" type="PanelContainer" node_paths=PackedStringArray("_versionLabel", "_buildPathLineEdit", "_buildPathFileDialog", "_startParametersLineEdit", "_uploadMethodOptionButton")]
+[node name="Deploy to SteamOS" type="PanelContainer" node_paths=PackedStringArray("_versionLabel", "_addDeviceWindow", "_buildPathLineEdit", "_buildPathFileDialog", "_startParametersLineEdit", "_uploadMethodOptionButton")]
 offset_right = 600.0
 offset_bottom = 500.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_txpoc")
 script = ExtResource("1_sde4n")
 _versionLabel = NodePath("VBoxContainer/LogoContainer/VBoxContainer/VersionLabel")
+_addDeviceWindow = NodePath("AddDeviceWindow")
 _buildPathLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput")
 _buildPathFileDialog = NodePath("BuildPathFileDialog")
 _startParametersLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput")
@@ -113,6 +115,7 @@ theme_override_constants/separation = 5
 [node name="BuildPathInput" type="LineEdit" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "C:/Users/hello/Development/Godot4-DeployToSteamOS-Builds"
 
 [node name="BrowseButton" type="Button" parent="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -165,6 +168,29 @@ popup/item_1/id = 1
 popup/item_2/text = "CleanReplace"
 popup/item_2/id = 2
 
+[node name="DevicesContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DevicesLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Devices"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_r6ghl")
+
+[node name="PairDevicesButton" type="Button" parent="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Pair Devices"
+
 [node name="BuildPathFileDialog" type="FileDialog" parent="."]
 title = "Open a Directory"
 initial_position = 2
@@ -173,9 +199,13 @@ ok_button_text = "Select Current Folder"
 file_mode = 2
 access = 2
 
+[node name="AddDeviceWindow" parent="." instance=ExtResource("4_yoa1a")]
+visible = false
+
 [connection signal="visibility_changed" from="." to="." method="OnVisibilityChanged"]
 [connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput" to="." method="BuildPathTextChanged"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BrowseButton" to="." method="BuildPathOpenFileDialog"]
 [connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput" to="." method="StartParametersTextChanged"]
 [connection signal="item_selected" from="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton" to="." method="UploadMethodItemSelected"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer/HBoxContainer/PanelContainer/PairDevicesButton" to="." method="PairDevices"]
 [connection signal="dir_selected" from="BuildPathFileDialog" to="." method="BuildPathTextChanged"]

@@ -25,18 +25,12 @@ public class SteamOSDevkitManager
     /// <returns>A list of valid SteamOS devkit devices</returns>
     public static async Task<List<Device>> ScanDevices()
     {
-        GD.Print("[ScanDevices] Starting");
-        
         var networkDevices = await ZeroconfResolver.ResolveAsync(SteamOSProtocol);
         List<Device> devices = new();
-        
-        GD.Print($"[ScanDevices] Found {networkDevices.Count} devices in network.");
         
         // Iterate through all network devices and request further connection info from the service
         foreach (var networkDevice in networkDevices)
         {
-            GD.Print($"[ScanDevices] Device: {networkDevice.DisplayName}@{networkDevice.IPAddress}");
-
             var device = new Device
             {
                 DisplayName = networkDevice.DisplayName,
@@ -222,7 +216,6 @@ public class SteamOSDevkitManager
         {
             // TODO: Linux Support
             case PlatformID.Win32NT:
-                // TODO: Test for Windows
                 applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "steamos-devkit");
                 break;
             case PlatformID.Unix:

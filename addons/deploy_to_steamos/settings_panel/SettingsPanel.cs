@@ -7,6 +7,7 @@ public partial class SettingsPanel : PanelContainer
 {
 	[ExportGroup("References")]
 	[Export] private Label _versionLabel;
+	[Export] private AddDeviceWindow _addDeviceWindow;
 	[Export] private LineEdit _buildPathLineEdit;
 	[Export] private FileDialog _buildPathFileDialog;
 	[Export] private LineEdit _startParametersLineEdit;
@@ -60,10 +61,12 @@ public partial class SettingsPanel : PanelContainer
 		_buildPathLineEdit.Text = newBuildPath;
 		SettingsManager.Instance.IsDirty = true;
 	}
+	
 	public void BuildPathOpenFileDialog()
 	{
 		_buildPathFileDialog.Show();
 	}
+	
 	public void StartParametersTextChanged(string newStartParameters)
 	{
 		_saveCooldown = 2f;
@@ -71,11 +74,17 @@ public partial class SettingsPanel : PanelContainer
 		_startParametersLineEdit.Text = newStartParameters;
 		SettingsManager.Instance.IsDirty = true;
 	}
+	
 	public void UploadMethodItemSelected(int newItemIndex)
 	{
 		_saveCooldown = 2f;
 		SettingsManager.Instance.Settings.UploadMethod = (SettingsFile.UploadMethods)newItemIndex;
 		_uploadMethodOptionButton.Selected = newItemIndex;
 		SettingsManager.Instance.IsDirty = true;
+	}
+
+	public void PairDevices()
+	{
+		_addDeviceWindow.Show();
 	}
 }

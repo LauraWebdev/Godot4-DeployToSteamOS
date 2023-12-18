@@ -1,25 +1,32 @@
-[gd_scene load_steps=6 format=3 uid="uid://6be5afncp3nr"]
+[gd_scene load_steps=7 format=3 uid="uid://6be5afncp3nr"]
 
 [ext_resource type="Script" path="res://addons/deploy_to_steamos/add_device_window/AddDeviceWindow.cs" id="1_3tepc"]
 [ext_resource type="PackedScene" uid="uid://p64nkj5ii2xt" path="res://addons/deploy_to_steamos/add_device_window/device_item_prefab.tscn" id="2_dka1k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mam6h"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_74135"]
-content_margin_left = 10.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imdn0"]
+content_margin_left = 30.0
 content_margin_top = 10.0
-content_margin_right = 10.0
+content_margin_right = 30.0
 content_margin_bottom = 10.0
+bg_color = Color(0.2, 0.0823529, 0.121569, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_74135"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ne8al"]
-content_margin_left = 10.0
+content_margin_left = 30.0
 content_margin_top = 10.0
-content_margin_right = 10.0
+content_margin_right = 30.0
 content_margin_bottom = 10.0
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 
@@ -51,6 +58,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
+[node name="InfoContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_imdn0")
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/InfoContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.788235, 0.858824, 1)
+theme_override_font_sizes/font_size = 11
+text = "Please keep in mind that you need to connect to your devkit device at least once through the official SteamOS devkit client to install the devkit tools to your device and create the neccessary authentication keys."
+autowrap_mode = 3
+
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -76,7 +95,6 @@ alignment = 2
 
 [node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer"]
 layout_mode = 2
-disabled = true
 text = "Refresh"
 
 [node name="CloseButton" type="Button" parent="PanelContainer/VBoxContainer/ActionsContainer/HBoxContainer"]

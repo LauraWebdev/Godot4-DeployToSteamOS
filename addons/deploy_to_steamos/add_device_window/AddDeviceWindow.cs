@@ -10,6 +10,10 @@ public partial class AddDeviceWindow : Window
 	private bool _isUpdatingDevices;
 	private float _scanCooldown;
 	private List<SteamOSDevkitManager.Device> _scannedDevices = new();
+	private List<SteamOSDevkitManager.Device> _pairedDevices = new();
+
+	public delegate void DevicesChangedDelegate(List<SteamOSDevkitManager.Device> devices);
+	public event DevicesChangedDelegate OnDevicesChanged;
 	
 	[ExportGroup("References")]
 	[Export] private VBoxContainer _devicesContainer;
@@ -18,13 +22,14 @@ public partial class AddDeviceWindow : Window
 
 	public override void _Process(double delta)
 	{
-		if (!_isVisible) return;
+		if (!Visible) return;
 		
 		_scanCooldown -= (float)delta;
 		if (_scanCooldown < 0f)
 		{
 			_scanCooldown = 10f;
 			UpdateDevices();
+			UpdateDeviceList();
 		}
 
 		_refreshButton.Disabled = _isUpdatingDevices;
@@ -37,38 +42,71 @@ public partial class AddDeviceWindow : Window
 		_isUpdatingDevices = true;
 		
 		var devices = await SteamOSDevkitManager.ScanDevices();
-		GD.Print($"Scanned {devices.Count} devices in network.");
-
 		if (devices != _scannedDevices)
 		{
-			_scannedDevices = devices;
-			// TODO: Update UI
-
-			// Clear List
-			foreach (var childNode in _devicesContainer.GetChildren())
+			foreach (var device in devices)
 			{
-				childNode.QueueFree();
+				if (
+					_scannedDevices.Exists(x => x.IPAdress == device.IPAdress && x.Login == device.Login)
+					|| _pairedDevices.Exists(x => x.IPAdress == device.IPAdress && x.Login == device.Login)
+				) continue;
+				
+				_scannedDevices.Add(device);
 			}
 			
-			foreach (var scannedDevice in _scannedDevices)
-			{
-				var deviceItem = _deviceItemPrefab.Instantiate<DeviceItemPrefab>();
-				deviceItem.SetUI(scannedDevice);
-				deviceItem.OnDevicePair += device =>
-				{
-					GD.Print($"Pairing with {device.DisplayName} ({device.Login}@{device.IPAdress})");
-				};
-				_devicesContainer.AddChild(deviceItem);
-			}
+			UpdateDeviceList();
 		}
 		
 		_isUpdatingDevices = false;
 	}
 
+	public void UpdateDeviceList()
+	{
+		// Clear List
+		foreach (var childNode in _devicesContainer.GetChildren())
+		{
+			childNode.QueueFree();
+		}
+
+		var devices = new List<SteamOSDevkitManager.Device>();
+		devices.AddRange(_pairedDevices);
+		foreach (var scannedDevice in _scannedDevices)
+		{
+			if (devices.Exists(x => x.IPAdress == scannedDevice.IPAdress && x.Login == scannedDevice.Login))
+			{
+				continue;
+			}
+			
+			devices.Add(scannedDevice);
+		}
+		
+		foreach (var scannedDevice in devices)
+		{
+			var deviceItem = _deviceItemPrefab.Instantiate<DeviceItemPrefab>();
+			deviceItem.SetUI(scannedDevice);
+			deviceItem.OnDevicePair += device =>
+			{
+				// TODO: Connect to device and run a random ssh command to check communication
+				_pairedDevices.Add(device);
+				UpdateDeviceList();
+			};
+			deviceItem.OnDeviceUnpair += device =>
+			{
+				_pairedDevices.Remove(device);
+				UpdateDeviceList();
+			};
+			_devicesContainer.AddChild(deviceItem);
+		}
+	}
+
 	public void Close()
 	{
-		// TODO: Notify DeployDock to Update the Dropdown
 		Hide();
+
+		if (_pairedDevices != SettingsManager.Instance.Devices)
+		{
+			OnDevicesChanged?.Invoke(_pairedDevices);
+		}
 	}
 
 	public void OnVisibilityChanged()
@@ -76,6 +114,10 @@ public partial class AddDeviceWindow : Window
 		if (Visible)
 		{
 			_isVisible = true;
+
+			// Prepopulate device list with saved devices
+			_pairedDevices = new List<SteamOSDevkitManager.Device>(SettingsManager.Instance.Devices);
+			UpdateDeviceList();
 		}
 		else
 		{
