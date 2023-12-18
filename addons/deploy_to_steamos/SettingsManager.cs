@@ -14,8 +14,8 @@ public partial class SettingsManager : Node
 	private const string DevicesPath = FolderPath + "/devices.json";
 
 	public bool IsDirty = false;
-	public SettingsFile Settings;
-	public List<SteamOSDevkitManager.Device> Devices;
+	public SettingsFile Settings = new();
+	public List<SteamOSDevkitManager.Device> Devices = new();
 
 	public override void _EnterTree()
 	{
@@ -29,7 +29,7 @@ public partial class SettingsManager : Node
 		if (!FileAccess.FileExists(SettingsPath))
 		{
 			Settings = new SettingsFile();
-			Save();
+			IsDirty = true;
 		}
 		else
 		{
@@ -37,11 +37,18 @@ public partial class SettingsManager : Node
 			var settingsFileContent = settingsFile.GetAsText();
 
 			Settings = JsonConvert.DeserializeObject<SettingsFile>(settingsFileContent);
+			
+			// Failsafe if settings file is corrupt
+			if (Settings == null)
+			{
+				Settings = new SettingsFile();
+				IsDirty = true;
+			}
 		}
 		if (!FileAccess.FileExists(SettingsPath))
 		{
 			Devices = new List<SteamOSDevkitManager.Device>();
-			Save();
+			IsDirty = true;
 		}
 		else
 		{
@@ -49,6 +56,18 @@ public partial class SettingsManager : Node
 			var devicesFileContent = devicesFile.GetAsText();
 
 			Devices = JsonConvert.DeserializeObject<List<SteamOSDevkitManager.Device>>(devicesFileContent);
+			
+			// Failsafe if device file is corrupt
+			if (Devices == null)
+			{
+				Devices = new List<SteamOSDevkitManager.Device>();
+				IsDirty = true;
+			}
+		}
+
+		if (IsDirty)
+		{
+			Save();
 		}
 	}
 
