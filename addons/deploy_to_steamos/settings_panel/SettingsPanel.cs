@@ -12,6 +12,9 @@ public partial class SettingsPanel : PanelContainer
 	[Export] private FileDialog _buildPathFileDialog;
 	[Export] private LineEdit _startParametersLineEdit;
 	[Export] private OptionButton _uploadMethodOptionButton;
+	[Export] private Label _uploadMethodDifferentialHintLabel;
+	[Export] private Label _uploadMethodIncrementalHintLabel;
+	[Export] private Label _uploadMethodCleanReplaceHintLabel;
 
 	private float _saveCooldown = 2f;
 
@@ -56,9 +59,10 @@ public partial class SettingsPanel : PanelContainer
 
 	public void BuildPathTextChanged(string newBuildPath)
 	{
-		_saveCooldown = 2f;
 		SettingsManager.Instance.Settings.BuildPath = newBuildPath;
 		_buildPathLineEdit.Text = newBuildPath;
+		
+		_saveCooldown = 2f;
 		SettingsManager.Instance.IsDirty = true;
 	}
 	
@@ -69,18 +73,25 @@ public partial class SettingsPanel : PanelContainer
 	
 	public void StartParametersTextChanged(string newStartParameters)
 	{
-		_saveCooldown = 2f;
 		SettingsManager.Instance.Settings.StartParameters = newStartParameters;
 		_startParametersLineEdit.Text = newStartParameters;
+		
+		_saveCooldown = 2f;
 		SettingsManager.Instance.IsDirty = true;
 	}
 	
 	public void UploadMethodItemSelected(int newItemIndex)
 	{
-		_saveCooldown = 2f;
-		SettingsManager.Instance.Settings.UploadMethod = (SettingsFile.UploadMethods)newItemIndex;
+		var newUploadMethod = (SettingsFile.UploadMethods)newItemIndex;
+		SettingsManager.Instance.Settings.UploadMethod = newUploadMethod;
 		_uploadMethodOptionButton.Selected = newItemIndex;
+		
+		_saveCooldown = 2f;
 		SettingsManager.Instance.IsDirty = true;
+
+		_uploadMethodDifferentialHintLabel.Visible = newUploadMethod == SettingsFile.UploadMethods.Differential;
+		_uploadMethodIncrementalHintLabel.Visible = newUploadMethod == SettingsFile.UploadMethods.Incremental;
+		_uploadMethodCleanReplaceHintLabel.Visible = newUploadMethod == SettingsFile.UploadMethods.CleanReplace;
 	}
 
 	public void PairDevices()

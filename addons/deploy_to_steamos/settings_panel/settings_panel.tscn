@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c8k27e2fcl21j"]
+[gd_scene load_steps=12 format=3 uid="uid://c8k27e2fcl21j"]
 
 [ext_resource type="Script" path="res://addons/deploy_to_steamos/settings_panel/SettingsPanel.cs" id="1_sde4n"]
 [ext_resource type="Texture2D" uid="uid://bjlqpiaahmp37" path="res://logo_bright.svg" id="2_uruwd"]
@@ -10,7 +10,7 @@ content_margin_left = 15.0
 content_margin_top = 15.0
 content_margin_right = 15.0
 content_margin_bottom = 15.0
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t6jug"]
 content_margin_left = 15.0
@@ -26,7 +26,7 @@ content_margin_left = 15.0
 content_margin_top = 15.0
 content_margin_right = 15.0
 content_margin_bottom = 15.0
-bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_so52p"]
 content_margin_left = 5.0
@@ -36,7 +36,18 @@ content_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6ghl"]
 
-[node name="Deploy to SteamOS" type="PanelContainer" node_paths=PackedStringArray("_versionLabel", "_addDeviceWindow", "_buildPathLineEdit", "_buildPathFileDialog", "_startParametersLineEdit", "_uploadMethodOptionButton")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2gufl"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Deploy to SteamOS" type="PanelContainer" node_paths=PackedStringArray("_versionLabel", "_addDeviceWindow", "_buildPathLineEdit", "_buildPathFileDialog", "_startParametersLineEdit", "_uploadMethodOptionButton", "_uploadMethodDifferentialHintLabel", "_uploadMethodIncrementalHintLabel", "_uploadMethodCleanReplaceHintLabel")]
 offset_right = 600.0
 offset_bottom = 500.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_txpoc")
@@ -46,7 +57,10 @@ _addDeviceWindow = NodePath("AddDeviceWindow")
 _buildPathLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput")
 _buildPathFileDialog = NodePath("BuildPathFileDialog")
 _startParametersLineEdit = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput")
-_uploadMethodOptionButton = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton")
+_uploadMethodOptionButton = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton")
+_uploadMethodDifferentialHintLabel = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer/DifferentialHintLabel")
+_uploadMethodIncrementalHintLabel = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer/IncrementalHintLabel")
+_uploadMethodCleanReplaceHintLabel = NodePath("VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer/CleanReplaceHintLabel")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -143,21 +157,25 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_so52p")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="UploadMethodLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer"]
+[node name="UploadMethodLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Upload Method"
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_r6ghl")
 
-[node name="UploadMethodOptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer"]
+[node name="UploadMethodOptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 item_count = 3
 selected = 0
@@ -167,6 +185,36 @@ popup/item_1/text = "Incremental"
 popup/item_1/id = 1
 popup/item_2/text = "CleanReplace"
 popup/item_2/id = 2
+
+[node name="UploadMethodHintContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2gufl")
+
+[node name="DifferentialHintLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer"]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.588235)
+theme_override_font_sizes/font_size = 12
+text = "Only changed and new files of the build will be uploaded."
+autowrap_mode = 3
+
+[node name="IncrementalHintLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.588235)
+theme_override_font_sizes/font_size = 12
+text = "A new build will be uploaded with the current timestamp. Existing builds will not be changed."
+autowrap_mode = 3
+
+[node name="CleanReplaceHintLabel" type="Label" parent="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/UploadMethodHintContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.588235)
+theme_override_font_sizes/font_size = 12
+text = "Before the new build will be uploaded, the old one will be fully removed."
+autowrap_mode = 3
 
 [node name="DevicesContainer" type="PanelContainer" parent="VBoxContainer/ScrollContainer/SettingsContainer"]
 layout_mode = 2
@@ -206,6 +254,6 @@ visible = false
 [connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BuildPathInput" to="." method="BuildPathTextChanged"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/SettingsContainer/BuildPathContainer/HBoxContainer/HBoxContainer/BrowseButton" to="." method="BuildPathOpenFileDialog"]
 [connection signal="text_changed" from="VBoxContainer/ScrollContainer/SettingsContainer/StartParametersContainer/HBoxContainer/StartParametersInput" to="." method="StartParametersTextChanged"]
-[connection signal="item_selected" from="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton" to="." method="UploadMethodItemSelected"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/SettingsContainer/UploadMethodContainer/VBoxContainer/HBoxContainer/PanelContainer/UploadMethodOptionButton" to="." method="UploadMethodItemSelected"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/SettingsContainer/DevicesContainer/HBoxContainer/PanelContainer/PairDevicesButton" to="." method="PairDevices"]
 [connection signal="dir_selected" from="BuildPathFileDialog" to="." method="BuildPathTextChanged"]
