@@ -100,7 +100,6 @@ public class SteamOSDevkitManager
         
         // Run async method until upload is done
         // TODO: Set Progress based on files
-        // TODO: Check files on remote for incremental builds
         var lastUploadedFilename = "";
         var uploadProgress = 0;
         var taskCompletion = new TaskCompletionSource<bool>();
