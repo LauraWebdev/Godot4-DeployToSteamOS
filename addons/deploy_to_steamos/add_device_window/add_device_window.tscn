@@ -67,7 +67,7 @@ custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.788235, 0.858824, 1)
 theme_override_font_sizes/font_size = 11
-text = "Please keep in mind that you need to connect to your devkit device at least once through the official SteamOS devkit client to install the devkit tools to your device and create the neccessary authentication keys."
+text = "Please keep in mind that you need to connect to your devkit device at least once through the official SteamOS devkit client to install the devkit tools to your device and create the necessary authentication keys."
 autowrap_mode = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
