@@ -11,13 +11,13 @@ public partial class Plugin : EditorPlugin
 	
 	public override void _EnterTree()
 	{
+		AddAutoloadSingleton("SettingsManager", "res://addons/deploy_to_steamos/SettingsManager.cs");
+		
 		_dock = GD.Load<PackedScene>("res://addons/deploy_to_steamos/deploy_dock/deploy_dock.tscn").Instantiate<Control>();
 		_settingsPanel = GD.Load<PackedScene>("res://addons/deploy_to_steamos/settings_panel/settings_panel.tscn").Instantiate<Control>();
 		
 		AddControlToContainer(CustomControlContainer.Toolbar, _dock);
 		AddControlToContainer(CustomControlContainer.ProjectSettingTabRight, _settingsPanel);
-		
-		AddAutoloadSingleton("SettingsManager", "res://addons/deploy_to_steamos/SettingsManager.cs");
 	}
 
 	public override void _ExitTree()
