@@ -87,7 +87,10 @@ public partial class AddDeviceWindow : Window
 			deviceItem.OnDevicePair += device =>
 			{
 				// TODO: Connect to device and run a random ssh command to check communication
-				_pairedDevices.Add(device);
+				if (!_pairedDevices.Exists(x => x.IPAdress == device.IPAdress && x.Login == device.Login))
+				{
+					_pairedDevices.Add(device);
+				}
 				UpdateDeviceList();
 			};
 			deviceItem.OnDeviceUnpair += device =>
