@@ -13,8 +13,14 @@ public partial class DeployWindow
         UpdateUI();
         
         // Adding a 2 second delay so the UI can update
-        await ToSignal(GetTree().CreateTimer(2), "timeout");
+        await ToSignal(GetTree().CreateTimer(1), "timeout");
         var buildTask = new TaskCompletionSource<bool>();
+
+        if (SettingsManager.Instance.Settings.UploadMethod == SettingsFile.UploadMethods.CleanReplace)
+        {
+            AddToConsole(DeployStep.Building, "Removing previous build as upload method is set to CleanReplace");
+            await SteamOSDevkitManager.RunSSHCommand(_device, "python3 ~/devkit-utils/steamos-delete --delete-title " + _gameId, logCallable);
+        }
         
         GodotExportManager.ExportProject(
             ProjectSettings.GlobalizePath("res://"),
