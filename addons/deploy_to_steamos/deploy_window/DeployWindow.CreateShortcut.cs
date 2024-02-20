@@ -16,7 +16,7 @@ public partial class DeployWindow
         {
             gameid = _gameId,
             directory = _prepareUploadResult.Directory,
-            argv = new[] { "game.x86_64" },
+            argv = new[] { "game.x86_64", SettingsManager.Instance.Settings.StartParameters },
             settings = new Dictionary<string, string>
             {
                 { "steam_play", "0" }
