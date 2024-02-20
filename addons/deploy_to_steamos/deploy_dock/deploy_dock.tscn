@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://kdbpdei4v1ub"]
 
 [ext_resource type="Script" path="res://addons/deploy_to_steamos/deploy_dock/DeployDock.cs" id="1_atc6e"]
-[ext_resource type="Texture2D" uid="uid://bjlqpiaahmp37" path="res://logo_bright.svg" id="2_rpj28"]
+[ext_resource type="Texture2D" uid="uid://s1tcpal4iir4" path="res://addons/deploy_to_steamos/icon.svg" id="2_rpj28"]
 [ext_resource type="PackedScene" uid="uid://6be5afncp3nr" path="res://addons/deploy_to_steamos/add_device_window/add_device_window.tscn" id="3_qfyb3"]
 [ext_resource type="PackedScene" uid="uid://ds2umdqybfls8" path="res://addons/deploy_to_steamos/deploy_window/deploy_window.tscn" id="4_8y8co"]
 
