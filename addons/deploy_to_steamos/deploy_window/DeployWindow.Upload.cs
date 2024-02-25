@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Godot;
 
@@ -10,14 +11,22 @@ public partial class DeployWindow
         CurrentStep = DeployStep.Uploading;
         CurrentProgress = StepProgress.Running;
         UpdateUI();
-        
-        await SteamOSDevkitManager.CopyFiles(
-            _device,
-            _localPath, 
-            _prepareUploadResult.Directory,
-            logCallable
-        );
-        
+
+        try
+        {
+            await SteamOSDevkitManager.CopyFiles(
+                _device,
+                _localPath,
+                _prepareUploadResult.Directory,
+                logCallable
+            );
+        }
+        catch (Exception e)
+        {
+            AddToConsole(DeployStep.Uploading, e.Message);
+            UpdateUIToFail();
+        }
+
         CurrentProgress = StepProgress.Succeeded;
         UpdateUI();
     }

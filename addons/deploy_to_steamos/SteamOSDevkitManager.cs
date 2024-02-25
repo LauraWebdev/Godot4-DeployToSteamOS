@@ -122,6 +122,7 @@ public class SteamOSDevkitManager
                 taskCompletion.TrySetResult(true);
             }
         };
+        client.ErrorOccurred += (sender, args) => throw new Exception("Error while uploading build.");
         
         await Task.Run(() => client.Upload(new DirectoryInfo(localPath), remotePath));
         await taskCompletion.Task;
