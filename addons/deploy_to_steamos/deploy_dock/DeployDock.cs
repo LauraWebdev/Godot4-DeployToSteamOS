@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
-using Newtonsoft.Json;
 
 namespace Laura.DeployToSteamOS;
 
@@ -49,7 +48,7 @@ public partial class DeployDock : PanelContainer
         _deployButton.Disabled = _selectedId >= 10000;
     }
 
-    public async void Deploy()
+    public void Deploy()
     {
         var device = SettingsManager.Instance.Devices.ElementAtOrDefault(_selectedId);
         if (device == null)

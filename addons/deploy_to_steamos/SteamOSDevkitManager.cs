@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
-using Newtonsoft.Json;
 using Renci.SshNet;
 using Zeroconf;
 
@@ -38,8 +38,7 @@ public class SteamOSDevkitManager
                 ServiceName = networkDevice.DisplayName + "." + SteamOSProtocol,
             };
 
-            IService serviceData;
-            var hasServiceData = networkDevice.Services.TryGetValue(device.ServiceName, out serviceData);
+            var hasServiceData = networkDevice.Services.TryGetValue(device.ServiceName, out var serviceData);
             
             // This device is not a proper SteamOS device
             if(!hasServiceData) continue;
@@ -66,7 +65,7 @@ public class SteamOSDevkitManager
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="command">The SSH command to run</param>
-    /// <param name="OnLog">An action for logging</param>
+    /// <param name="logCallable">A callable for logging</param>
     /// <returns>The SSH CLI output</returns>
     public static async Task<string> RunSSHCommand(Device device, string command, Callable logCallable)
     {
@@ -89,7 +88,7 @@ public class SteamOSDevkitManager
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="localPath">The path on the host</param>
     /// <param name="remotePath">The path on the device</param>
-    /// <param name="OnLog">An action for logging</param>
+    /// <param name="logCallable">A callable for logging</param>
     public static async Task CopyFiles(Device device, string localPath, string remotePath, Callable logCallable)
     {
         logCallable.CallDeferred($"Connecting to {device.Login}@{device.IPAdress}");
@@ -137,14 +136,14 @@ public class SteamOSDevkitManager
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="gameId">An ID for the game</param>
-    /// <param name="OnLog">An action for logging</param>
+    /// <param name="logCallable">A callable for logging</param>
     /// <returns>The CLI result</returns>
     public static async Task<PrepareUploadResult> PrepareUpload(Device device, string gameId, Callable logCallable)
     {
         logCallable.CallDeferred("Preparing upload");
         
         var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId, logCallable);
-        var result = JsonConvert.DeserializeObject<PrepareUploadResult>(resultRaw);
+        var result = JsonSerializer.Deserialize<PrepareUploadResult>(resultRaw);
 
         return result;
     }
@@ -154,15 +153,15 @@ public class SteamOSDevkitManager
     /// </summary>
     /// <param name="device">A SteamOS devkit device</param>
     /// <param name="parameters">Parameters for the shortcut</param>
-    /// <param name="OnLog">An action for logging</param>
+    /// <param name="logCallable">A callable for logging</param>
     /// <returns>The CLI result</returns>
     public static async Task<CreateShortcutResult> CreateShortcut(Device device, CreateShortcutParameters parameters, Callable logCallable)
     {
-        var parametersJson = JsonConvert.SerializeObject(parameters);
+        var parametersJson = JsonSerializer.Serialize(parameters);
         var command = $"python3 ~/devkit-utils/steam-client-create-shortcut --parms '{parametersJson}'";
         
         var resultRaw = await RunSSHCommand(device, command, logCallable);
-        var result = JsonConvert.DeserializeObject<CreateShortcutResult>(resultRaw);
+        var result = JsonSerializer.Deserialize<CreateShortcutResult>(resultRaw);
 
         return result;
     }

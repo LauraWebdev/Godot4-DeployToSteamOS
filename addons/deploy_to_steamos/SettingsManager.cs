@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using Godot;
-using Newtonsoft.Json;
 
 namespace Laura.DeployToSteamOS;
 
@@ -36,7 +36,7 @@ public partial class SettingsManager : Node
 			using var settingsFile = FileAccess.Open(SettingsPath, FileAccess.ModeFlags.Read);
 			var settingsFileContent = settingsFile.GetAsText();
 
-			Settings = JsonConvert.DeserializeObject<SettingsFile>(settingsFileContent);
+			Settings = JsonSerializer.Deserialize<SettingsFile>(settingsFileContent);
 			
 			// Failsafe if settings file is corrupt
 			if (Settings == null)
@@ -55,7 +55,7 @@ public partial class SettingsManager : Node
 			using var devicesFile = FileAccess.Open(DevicesPath, FileAccess.ModeFlags.Read);
 			var devicesFileContent = devicesFile.GetAsText();
 
-			Devices = JsonConvert.DeserializeObject<List<SteamOSDevkitManager.Device>>(devicesFileContent);
+			Devices = JsonSerializer.Deserialize<List<SteamOSDevkitManager.Device>>(devicesFileContent);
 			
 			// Failsafe if device file is corrupt
 			if (Devices == null)
@@ -81,12 +81,12 @@ public partial class SettingsManager : Node
 		}
 		
 		// Save Settings
-		var jsonSettings = JsonConvert.SerializeObject(Settings);
+		var jsonSettings = JsonSerializer.Serialize(Settings);
 		using var settingsFile = FileAccess.Open(SettingsPath, FileAccess.ModeFlags.Write);
 		settingsFile.StoreString(jsonSettings);
 		
 		// Save Devices
-		var jsonDevices = JsonConvert.SerializeObject(Devices);
+		var jsonDevices = JsonSerializer.Serialize(Devices);
 		using var devicesFile = FileAccess.Open(DevicesPath, FileAccess.ModeFlags.Write);
 		devicesFile.StoreString(jsonDevices);
 
