@@ -172,13 +172,13 @@ public class SteamOSDevkitManager
     /// </summary>
     public class Device
     {
-        public string DisplayName;
-        public string IPAdress;
-        public int Port;
-        public string ServiceName;
-        public string Settings;
-        public string Login;
-        public string Devkit1;
+        public string DisplayName { get; set; }
+        public string IPAdress { get; set; }
+        public int Port { get; set; }
+        public string ServiceName { get; set; }
+        public string Settings { get; set; }
+        public string Login { get; set; }
+        public string Devkit1 { get; set; }
     }
 
     public class PrepareUploadResult
@@ -198,10 +198,10 @@ public class SteamOSDevkitManager
     /// </summary>
     public struct CreateShortcutParameters
     {
-        public string gameid;
-        public string directory;
-        public string[] argv;
-        public Dictionary<string, string> settings;
+        public string gameid { get; set; }
+        public string directory { get; set; }
+        public string[] argv { get; set; }
+        public Dictionary<string, string> settings { get; set; }
     }
 
     /// <summary>

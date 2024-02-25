@@ -7,7 +7,7 @@ public class SettingsFile
         CleanReplace
     }
     
-    public string BuildPath = "";
-    public string StartParameters = "";
-    public UploadMethods UploadMethod = UploadMethods.Differential;
+    public string BuildPath { get; set; } = "";
+    public string StartParameters { get; set; } = "";
+    public UploadMethods UploadMethod { get; set; } = UploadMethods.Differential;
 }
