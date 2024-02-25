@@ -20,7 +20,7 @@ public partial class SettingsManager : Node
 	public override void _EnterTree()
 	{
 		Instance = this;
-		
+
 		Load();
 	}
 
@@ -36,8 +36,8 @@ public partial class SettingsManager : Node
 			using var settingsFile = FileAccess.Open(SettingsPath, FileAccess.ModeFlags.Read);
 			var settingsFileContent = settingsFile.GetAsText();
 
-			Settings = JsonSerializer.Deserialize<SettingsFile>(settingsFileContent);
-			
+			Settings = JsonSerializer.Deserialize<SettingsFile>(settingsFileContent, DefaultSerializerOptions);
+
 			// Failsafe if settings file is corrupt
 			if (Settings == null)
 			{
@@ -45,6 +45,7 @@ public partial class SettingsManager : Node
 				IsDirty = true;
 			}
 		}
+
 		if (!FileAccess.FileExists(SettingsPath))
 		{
 			Devices = new List<SteamOSDevkitManager.Device>();
@@ -55,8 +56,8 @@ public partial class SettingsManager : Node
 			using var devicesFile = FileAccess.Open(DevicesPath, FileAccess.ModeFlags.Read);
 			var devicesFileContent = devicesFile.GetAsText();
 
-			Devices = JsonSerializer.Deserialize<List<SteamOSDevkitManager.Device>>(devicesFileContent);
-			
+			Devices = JsonSerializer.Deserialize<List<SteamOSDevkitManager.Device>>(devicesFileContent, DefaultSerializerOptions);
+
 			// Failsafe if device file is corrupt
 			if (Devices == null)
 			{
@@ -79,12 +80,12 @@ public partial class SettingsManager : Node
 		{
 			DirAccess.MakeDirRecursiveAbsolute(FolderPath);
 		}
-		
+
 		// Save Settings
 		var jsonSettings = JsonSerializer.Serialize(Settings);
 		using var settingsFile = FileAccess.Open(SettingsPath, FileAccess.ModeFlags.Write);
 		settingsFile.StoreString(jsonSettings);
-		
+
 		// Save Devices
 		var jsonDevices = JsonSerializer.Serialize(Devices);
 		using var devicesFile = FileAccess.Open(DevicesPath, FileAccess.ModeFlags.Write);
@@ -92,4 +93,9 @@ public partial class SettingsManager : Node
 
 		IsDirty = false;
 	}
+
+	public static readonly JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
+	{
+		PropertyNameCaseInsensitive = true,
+	};
 }

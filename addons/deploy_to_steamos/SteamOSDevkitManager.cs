@@ -144,7 +144,7 @@ public class SteamOSDevkitManager
         logCallable.CallDeferred("Preparing upload");
         
         var resultRaw = await RunSSHCommand(device, "python3 ~/devkit-utils/steamos-prepare-upload --gameid " + gameId, logCallable);
-        var result = JsonSerializer.Deserialize<PrepareUploadResult>(resultRaw);
+        var result = JsonSerializer.Deserialize<PrepareUploadResult>(resultRaw, DefaultSerializerOptions);
 
         return result;
     }
@@ -162,7 +162,7 @@ public class SteamOSDevkitManager
         var command = $"python3 ~/devkit-utils/steam-client-create-shortcut --parms '{parametersJson}'";
         
         var resultRaw = await RunSSHCommand(device, command, logCallable);
-        var result = JsonSerializer.Deserialize<CreateShortcutResult>(resultRaw);
+        var result = JsonSerializer.Deserialize<CreateShortcutResult>(resultRaw, DefaultSerializerOptions);
 
         return result;
     }
@@ -243,4 +243,9 @@ public class SteamOSDevkitManager
         var privateKeyFile = new PrivateKeyFile(privateKeyPath);
         return new ConnectionInfo(device.IPAdress, device.Login, new PrivateKeyAuthenticationMethod(device.Login, privateKeyFile));
     }
+
+    public static readonly JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true,
+    };
 }
