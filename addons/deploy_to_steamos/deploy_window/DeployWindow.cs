@@ -79,36 +79,6 @@ public partial class DeployWindow : Window
 
 	public async void Deploy(SteamOSDevkitManager.Device device)
 	{
-		/*
-		try
-		{
-			CurrentStep = DeployStep.Uploading;
-			CurrentProgress = StepProgress.Running;
-			UpdateUI();
-			
-			var randomFloat = GD.Randf();
-			AddToConsole(CurrentStep, "Random Number: " + randomFloat);
-			await ToSignal(GetTree().CreateTimer(1), "timeout");
-			if (randomFloat > 0.5f)
-			{
-				throw new Exception("Float was above 0.5");
-			}
-			await ToSignal(GetTree().CreateTimer(1), "timeout");
-			
-			CurrentProgress = StepProgress.Succeeded;
-			UpdateUI();
-		}
-		catch (Exception e)
-		{
-			AddToConsole(CurrentStep, $"Failed! {e.Message}");
-			CurrentProgress = StepProgress.Failed;
-			UpdateUI();
-			CurrentStep = DeployStep.Done;
-			CurrentProgress = StepProgress.Queued;
-			UpdateUI();
-			return;
-		} */
-		
 		if (device == null)
 		{
 			GD.PrintErr("[DeployToSteamOS] Device is not available.");
