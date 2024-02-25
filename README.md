@@ -5,7 +5,6 @@ A Godot 4 addon to deploy your game to your SteamOS devkit devices with one clic
 **Due to external dependencies, this addon is only compatible with Godot 4 C# for the time being**
 
 - Install the following NuGet packages
-  - Newtonsoft.Json (Version 13.0.3)
   - SSH.NET (Version 2023.0.0)
   - Zeroconf (Version 3.6.11)
 - Add the `deploy_to_steamos` folder to your project
@@ -26,6 +25,9 @@ Only the official SteamOS devkit client can establish the initial connection, in
 
 ### Why is this addon only compatible with the C# build of Godot?
 This project uses external libraries for establishing SSH connections and scanning for devices on your network that aren't accessible through GDScript only.
+
+### The deployment stops after "Uploading files"
+The most common cause for this problem is a build error of your project or your project missing the "Steamdeck" Linux export preset. 
 
 ## Donations
 If you would like to support my open source projects, feel free to [drop me a coffee (or rather, an energy drink)](https://ko-fi.com/laurasofiaheimann) or check out my [release games](https://indiegesindel.itch.io) on itch.
