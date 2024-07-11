@@ -261,7 +261,7 @@ public partial class DeployWindow : Window
 		}
 	}
 
-	private void ToggleConsoleVisiblity(DeployStep step)
+	private void ToggleConsoleVisibility(DeployStep step)
 	{
 		var consoleContainer = step switch
 		{
@@ -287,18 +287,18 @@ public partial class DeployWindow : Window
 
 	public void OnBuildingConsolePressed()
 	{
-		ToggleConsoleVisiblity(DeployStep.Building);
+		ToggleConsoleVisibility(DeployStep.Building);
 	}
 	public void OnPrepareUploadConsolePressed()
 	{
-		ToggleConsoleVisiblity(DeployStep.PrepareUpload);
+		ToggleConsoleVisibility(DeployStep.PrepareUpload);
 	}
 	public void OnUploadingConsolePressed()
 	{
-		ToggleConsoleVisiblity(DeployStep.Uploading);
+		ToggleConsoleVisibility(DeployStep.Uploading);
 	}
 	public void OnCreatingShortcutConsolePressed()
 	{
-		ToggleConsoleVisiblity(DeployStep.CreateShortcut);
+		ToggleConsoleVisibility(DeployStep.CreateShortcut);
 	}
 }
