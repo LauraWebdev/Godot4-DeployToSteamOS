@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -210,20 +211,13 @@ public class SteamOSDevkitManager
     /// <returns>The path to the "devkit_rsa" key</returns>
     public static string GetPrivateKeyPath()
     {
-        string applicationDataPath;
-        switch (System.Environment.OSVersion.Platform)
-        {
-            // TODO: Linux Support
-            case PlatformID.Win32NT:
-                applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "steamos-devkit");
-                break;
-            case PlatformID.Unix:
-                applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Library", "Application Support"); 
-                break;
-            default:
-                applicationDataPath = "";
-                break;
-        }
+        string applicationDataPath = "";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "steamos-devkit");
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Library", "Application Support"); 
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            applicationDataPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".config");
         
         var keyFolder = Path.Combine(applicationDataPath, "steamos-devkit");
         return Path.Combine(keyFolder, "devkit_rsa");
