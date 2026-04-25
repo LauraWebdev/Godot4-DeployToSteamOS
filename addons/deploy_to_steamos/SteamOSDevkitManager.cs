@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +27,11 @@ public class SteamOSDevkitManager
     /// <returns>A list of valid SteamOS devkit devices</returns>
     public static async Task<List<Device>> ScanDevices()
     {
-        var networkDevices = await ZeroconfResolver.ResolveAsync(SteamOSProtocol);
+        var ipv4Interfaces = NetworkInterface.GetAllNetworkInterfaces()
+            .Where(ni => ni.Supports(NetworkInterfaceComponent.IPv4))
+            .ToArray();
+
+        var networkDevices = await ZeroconfResolver.ResolveAsync(SteamOSProtocol, netInterfacesToSendRequestOn: ipv4Interfaces);
         List<Device> devices = new();
         
         // Iterate through all network devices and request further connection info from the service
